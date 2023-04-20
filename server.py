@@ -1,9 +1,19 @@
-# Server code
-#from socket import *
-import socket
+#python server.py 12001
 
- # The port on which to listen
-serverPort = 12000
+# Server code
+import socket
+import argparse
+
+# Create the parser
+parser = argparse.ArgumentParser()
+# Add an argument
+parser.add_argument('port', type=int)
+# Parse the argument
+args = parser.parse_args()
+#print(args.port)
+serverPort = args.port
+
+
  # Create a TCP socket
 serverSocket = socket.socket (socket.AF_INET , socket.SOCK_STREAM)
  # Bind the socket to the port
