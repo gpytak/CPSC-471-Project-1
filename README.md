@@ -5,7 +5,7 @@ Gregory Pytak as gpytak@csu.fullerton.edu
 Luis Venegas as Luisvenegas214@csu.Fullerton.edu  
 Daniel Yoshida as dtyoshid@csu.fullerton.edu
 ## Programming language used: Python
-## To execute this code then follow the steps below:
+## Follow the steps below to execute this code:
 1) The server shall be invoked as: python serv.py <port number>
 2) The ftp client is invoked as: python cli.py <server machine> <server port>
 3) The user can use the following commands:
