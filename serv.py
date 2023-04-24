@@ -1,12 +1,11 @@
-# python server.py 12001
+# python serv.py 12001
 
 import socket
 import sys
-import os
 import subprocess
 
 # Command line checks
-if len(sys.argv) < 2:
+if len(sys.argv) != 2:
     print("USAGE: python serv.py <port number>")
 
 else:
@@ -44,7 +43,7 @@ else:
         while len(recvBuff) < numBytes:
 
             # Attempt to receive bytes
-            tmpBuff = sock.recv(numBytes)
+            tmpBuff = sock.recv(numBytes).decode()
 
             # The other side has closed the socket
             if not tmpBuff:
@@ -66,58 +65,120 @@ else:
         print("Accepted connection from client: ", addr)
         print("\n")
 
+        # Gets the command from the client
         receivedData = clientSocket.recv(bufferSize).decode()
+
         print(receivedData)
 
         ###################################################################################
 
         if receivedData == "get":
-            print("SUCCESS")
+
+            # Gets the file name from the client
+            receivedFileName = clientSocket.recv(bufferSize).decode()
+
+            # Check to see if the file is available or not
+            try:
+                # Open the file
+                fileObj = open(receivedFileName, "r")
+                print("[+] Was able to open file")
+            except:
+                print("[-] Unable to locate file")
+                break
+
+            # The number of bytes sent
+            numSent = 0
+
+            # The file data
+            fileData = None
+
+            # Keep sending until all is sent
+            while True:
+
+                # Read the data
+                fileData = fileObj.read(65536)
+
+                # Make sure we did not hit EOF
+                if fileData:
+
+                    # get the size of the data
+                    dataSizeStr = str(len(fileData))
+
+                    # makes sure the dataSize is 10
+                    while len(dataSizeStr) < 10:
+                        dataSizeStr = "0" + dataSizeStr
+
+                    # add the data size before the rest of the command
+                    fileData = dataSizeStr + fileData
+
+                    # The number of bytes sent
+                    numSent = 0
+
+                    # Send the data!
+                    while len(fileData) > numSent:
+                        numSent += clientSocket.send(fileData[numSent:].encode())
+
+                else:
+                    # close the file because we're done
+                    fileObj.close()
+                    break
+
+            print("[+] Sent", numSent, "bytes.")
+            print("[+] SUCCESS")
+
+            # Close the socket and the file
+            clientSocket.close()
+            break
 
         ###################################################################################
 
-        elif receivedData == "put":
-            print("SUCCESS")
+        if receivedData == "put":
+            # The buffer to all data received from the
+            # the client.
+            fileData = ""
+
+            # The temporary buffer to store the received
+            # data.
+            recvBuff = ""
+
+            # The size of the incoming file
+            fileSize = 0
+
+            # The buffer containing the file size
+            fileSizeBuff = ""
+
+            # first 10 bytes indicate the file's size so we get that
+            fileSizeBuff = recvAll(clientSocket, 10)
+
+            # convert the file size to an integer
+            fileSize = int(fileSizeBuff)
+
+            print("[+] Received", fileSize, "bytes.")
+            print("[+] SUCCESS")
+
+            # Close the socket and the file
+            clientSocket.close()
+            break
 
         ###################################################################################
 
-        elif receivedData == "ls":
+        if receivedData == "ls":
             for line in subprocess.getstatusoutput(receivedData):
                 print(line)
 
-            print("SUCCESS")
+            print("[+] SUCCESS")
 
-        else:
+            # Close the socket and the file
+            clientSocket.close()
             break
 
-        # The buffer to all data received from the
-        # the client.
-        fileData = ""
+        ###################################################################################
 
-        # The temporary buffer to store the received
-        # data.
-        recvBuff = ""
+        if receivedData == "quit":
+            print("[+] SUCCESS")
 
-        # The size of the incoming file
-        fileSize = 0
+            # Close the socket and the file
+            clientSocket.close()
+            break
 
-        # The buffer containing the file size
-        fileSizeBuff = ""
-
-        # Receive the first 10 bytes indicating the
-        # size of the file
-        fileSizeBuff = recvAll(clientSocket, 10)
-
-        # Get the file size
-        fileSize = int(fileSizeBuff)
-
-        print("The file size is ", fileSize)
-
-        # Get the file data
-        fileData = recvAll(clientSocket, fileSize)
-
-        print("The file data is: ")
-        print(fileData)
-
-        # Close our side
-        clientSocket.close()
+    serverSocket.close()

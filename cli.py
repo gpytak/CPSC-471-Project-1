@@ -1,4 +1,4 @@
-# python client.py 127.0.0.1 12001
+# python cli.py localhost 12001
 
 import socket
 import os
@@ -23,7 +23,7 @@ def recvAll(sock, numBytes):
     while len(recvBuff) < numBytes:
 
         # Attempt to receive bytes
-        tmpBuff = sock.recv(numBytes)
+        tmpBuff = sock.recv(numBytes).decode()
 
         # The other side has closed the socket
         if not tmpBuff:
@@ -36,12 +36,12 @@ def recvAll(sock, numBytes):
 
 
 # Command line checks
-if len(sys.argv) < 3:
+if len(sys.argv) != 3:
     print("USAGE: python cli.py <server machine> <server port>")
 
 else:
     # Sends the address of the server
-    serverAddress = str(sys.argv[1])
+    serverAddress = sys.argv[1]
 
     # Sends the port number of the server
     serverPort = int(sys.argv[2])
@@ -51,12 +51,6 @@ else:
 
     # Connect to the server
     clientSocket.connect((serverAddress, serverPort))
-
-    # The number of bytes sent
-    numSent = 0
-
-    # The file data
-    fileData = None
 
     # Buffer size
     bufferSize = 4096
@@ -101,8 +95,37 @@ else:
                 print("Unable to get file size")
                 break
 
-            # Send the verified command to the server
+            # Send the verified command and file name to the server
             clientSocket.send(verify_command.encode())
+            clientSocket.send(file_name.encode())
+
+            # The buffer to all data received from the client
+            fileData = ""
+
+            # The temporary buffer to store the received data
+            recvBuff = ""
+
+            # The size of the incoming file
+            fileSize = 0
+
+            # The buffer containing the file size
+            fileSizeBuff = ""
+
+            # get the size of the buffer indicated by the first 10 bytes
+            fileSizeBuff = recvAll(clientSocket, 10)
+
+            # Get the file size as an integer
+            fileSize = int(fileSizeBuff)
+
+            # Get the file data using the first 10 bytes
+            fileData = recvAll(clientSocket, fileSize)
+
+            print("[+] Filename:", file_name)
+            print("[+] Received", fileSize, "bytes.")
+
+            # Close the socket and the file
+            clientSocket.close()
+            break
 
         ###################################################################################
 
@@ -113,61 +136,79 @@ else:
             try:
                 # Open the file
                 fileObj = open(file_name, "r")
-                print("Was able to open file")
+                print("[+] Was able to open file")
             except:
-                print("Unable to locate file")
+                print("[-] Unable to locate file")
                 break
 
-            # Send the verified command to the server
+            # The number of bytes sent
+            numSent = 0
+
+            # The file data
+            fileData = None
+
+            # send the command so the server knows which command
             clientSocket.send(verify_command.encode())
 
-            # Read 65536 bytes of data
-            fileData = fileObj.read(65536)
+            # Keep sending until all is sent
+            while True:
 
-            # Make sure we did not hit EOF
-            if fileData:
+                # Read the data
+                fileData = fileObj.read(65536)
 
-                # Get the size of the data read
-                # and convert it to string
-                dataSizeStr = str(len(fileData))
+                # Make sure we did not hit EOF
+                if fileData:
 
-                # Prepend 0's to the size string
-                # until the size is 10 bytes
-                while len(dataSizeStr) < 10:
-                    dataSizeStr = "0" + dataSizeStr
+                    # get the size of the data
+                    dataSizeStr = str(len(fileData))
 
-                # Prepend the size of the data to the
-                # file data.
-                fileData = dataSizeStr + fileData
+                    # makes sure the dataSize is 10
+                    while len(dataSizeStr) < 10:
+                        dataSizeStr = "0" + dataSizeStr
 
-                # The number of bytes sent
-                numSent = 0
+                    # add the data size before the rest of the command
+                    fileData = dataSizeStr + fileData
 
-                # Send the data!
-                while len(fileData) > numSent:
-                    numSent += clientSocket.send(fileData[numSent:])
+                    # The number of bytes sent
+                    numSent = 0
 
-            # The file has been read. We are done
-            else:
-                fileObj.close()
-                break
+                    # Send the data!
+                    while len(fileData) > numSent:
+                        numSent += clientSocket.send(
+                            fileData[numSent:].encode())
 
-            print("Filename:", file_name)
-            print("Sent ", numSent, " bytes.")
+                else:
+                    # Close the file because we're done
+                    fileObj.close()
+                    break
+
+            print("[+] Filename:", file_name)
+            print("[+] Sent", numSent, "bytes.")
+
+            # Close the socket and the file
+            clientSocket.close()
+            break
 
         ###################################################################################
 
         # Verify if the command is 'ls'
         if verify_command == "ls":
+
             # Send the verified command to the server
             clientSocket.send(verify_command.encode())
 
-            receivedData = clientSocket.recv(bufferSize).decode()
+            # Close the socket and the file
+            clientSocket.close()
+            break
 
         ###################################################################################
 
         # Verify if the command is 'quit'
         if verify_command == "quit":
+
+            # Send the verified command to the server
+            clientSocket.send(verify_command.encode())
+
             # Close the socket and the file
             clientSocket.close()
             break
