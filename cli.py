@@ -90,7 +90,7 @@ else:
                 # Get the file size
                 fileSize = os.path.getsize(file_name)
             except:
-                print("Unable to get file size")
+                print("[-] Unable to get file size")
                 break
 
             # Send the verified command and file name to the server
@@ -120,10 +120,6 @@ else:
 
             print("[+] Filename:", file_name)
             print("[+] Received", fileSize, "bytes.")
-
-            # Close the socket and the file
-            clientSocket.close()
-            break
 
         ###################################################################################
 
@@ -183,10 +179,6 @@ else:
             print("[+] Filename:", file_name)
             print("[+] Sent", numSent, "bytes.")
 
-            # Close the socket and the file
-            clientSocket.close()
-            break
-
         ###################################################################################
 
         # Verify if the command is 'ls'
@@ -194,10 +186,6 @@ else:
 
             # Send the verified command to the server
             clientSocket.send(verify_command.encode())
-
-            # Close the socket and the file
-            clientSocket.close()
-            break
 
         ###################################################################################
 
