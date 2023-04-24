@@ -1,12 +1,10 @@
-# python serv.py 12001
-
 import socket
 import sys
 import subprocess
 
 # Command line checks
 if len(sys.argv) != 2:
-    print("USAGE: python serv.py <port number>")
+    print("USAGE: python3 serv.py <port number>")
 
 else:
     # Gets the port number of the server

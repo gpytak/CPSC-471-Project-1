@@ -1,5 +1,3 @@
-# python cli.py localhost 12001
-
 import socket
 import os
 import sys
@@ -37,7 +35,7 @@ def recvAll(sock, numBytes):
 
 # Command line checks
 if len(sys.argv) != 3:
-    print("USAGE: python cli.py <server machine> <server port>")
+    print("USAGE: python3 cli.py <server machine> <server port>")
 
 else:
     # Sends the address of the server
