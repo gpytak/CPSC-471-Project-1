@@ -38,20 +38,10 @@ if len(sys.argv) != 3:
     print("USAGE: python3 cli.py <server machine> <server port>")
 
 else:
-    # Sends the address of the server
-    serverAddress = sys.argv[1]
-
-    # Sends the port number of the server
-    serverPort = int(sys.argv[2])
-
-    # Create a socket
-    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    # Connect to the server
-    clientSocket.connect((serverAddress, serverPort))
-
     # Buffer size
     bufferSize = 4096
+
+    SPACER = " "
 
     # Keep sending until all is sent
     while True:
@@ -86,9 +76,20 @@ else:
         # Verify if the command is 'get'
         if verify_command == "get":
 
+            # Sends the address of the server
+            serverAddress = sys.argv[1]
+
+            # Sends the port number of the server
+            serverPort = int(sys.argv[2])
+
+            # Create a socket
+            clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # Connect to the server
+            clientSocket.connect((serverAddress, serverPort))
+
             # Send the verified command and file name to the server
-            clientSocket.send(verify_command.encode())
-            clientSocket.send(file_name.encode())
+            clientSocket.send(user_input.encode())
 
             # The buffer to all data received from the client
             fileData = ""
