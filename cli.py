@@ -86,13 +86,6 @@ else:
         # Verify if the command is 'get'
         if verify_command == "get":
 
-            try:
-                # Get the file size
-                fileSize = os.path.getsize(file_name)
-            except:
-                print("[-] Unable to get file size")
-                break
-
             # Send the verified command and file name to the server
             clientSocket.send(verify_command.encode())
             clientSocket.send(file_name.encode())
@@ -121,10 +114,24 @@ else:
             print("[+] Filename:", file_name)
             print("[+] Received", fileSize, "bytes.")
 
+            clientSocket.close()
+
         ###################################################################################
 
         # Verify if the command is 'put'
         if verify_command == "put":
+
+            # Sends the address of the server
+            serverAddress = sys.argv[1]
+
+            # Sends the port number of the server
+            serverPort = int(sys.argv[2])
+
+            # Create a socket
+            clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # Connect to the server
+            clientSocket.connect((serverAddress, serverPort))
 
             # Check to see if the file is available or not
             try:
@@ -135,20 +142,20 @@ else:
                 print("[-] Unable to locate file")
                 break
 
+            # send the command so the server knows which command
+            clientSocket.send(verify_command.encode())
+
             # The number of bytes sent
             numSent = 0
 
             # The file data
             fileData = None
 
-            # send the command so the server knows which command
-            clientSocket.send(verify_command.encode())
-
             # Keep sending until all is sent
             while True:
 
                 # Read the data
-                fileData = fileObj.read(65536)
+                fileData = fileObj.read(bufferSize)
 
                 # Make sure we did not hit EOF
                 if fileData:
@@ -174,23 +181,52 @@ else:
                 else:
                     # Close the file because we're done
                     fileObj.close()
+                    clientSocket.close()
                     break
 
             print("[+] Filename:", file_name)
             print("[+] Sent", numSent, "bytes.")
+
+            clientSocket.close()
 
         ###################################################################################
 
         # Verify if the command is 'ls'
         if verify_command == "ls":
 
+            # Sends the address of the server
+            serverAddress = sys.argv[1]
+
+            # Sends the port number of the server
+            serverPort = int(sys.argv[2])
+
+            # Create a socket
+            clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # Connect to the server
+            clientSocket.connect((serverAddress, serverPort))
+
             # Send the verified command to the server
             clientSocket.send(verify_command.encode())
+
+            clientSocket.close()
 
         ###################################################################################
 
         # Verify if the command is 'quit'
         if verify_command == "quit":
+
+            # Sends the address of the server
+            serverAddress = sys.argv[1]
+
+            # Sends the port number of the server
+            serverPort = int(sys.argv[2])
+
+            # Create a socket
+            clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # Connect to the server
+            clientSocket.connect((serverAddress, serverPort))
 
             # Send the verified command to the server
             clientSocket.send(verify_command.encode())

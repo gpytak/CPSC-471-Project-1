@@ -119,25 +119,20 @@ else:
                 else:
                     # close the file because we're done
                     fileObj.close()
+                    clientSocket.close()
                     break
 
             print("[+] Sent", numSent, "bytes.")
             print("[+] SUCCESS")
 
-            # Close the socket and the file
             clientSocket.close()
-            break
 
         ###################################################################################
 
         if receivedData == "put":
             # The buffer to all data received from the
             # the client.
-            fileData = ""
-
-            # The temporary buffer to store the received
-            # data.
-            recvBuff = ""
+            # fileData = ""
 
             # The size of the incoming file
             fileSize = 0
@@ -156,19 +151,16 @@ else:
 
             # Close the socket and the file
             clientSocket.close()
-            break
 
         ###################################################################################
 
         if receivedData == "ls":
-            for line in subprocess.getstatusoutput(receivedData):
+            for line in subprocess.getstatusoutput("dir"):
                 print(line)
 
             print("[+] SUCCESS")
 
-            # Close the socket and the file
             clientSocket.close()
-            break
 
         ###################################################################################
 
@@ -179,4 +171,5 @@ else:
             clientSocket.close()
             break
 
+    clientSocket.close()
     serverSocket.close()
