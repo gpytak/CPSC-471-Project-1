@@ -1,5 +1,4 @@
 import socket
-import os
 import sys
 
 # ************************************************
@@ -9,8 +8,6 @@ import sys
 # @param numBytes - the number of bytes to receive
 # @return - the bytes received
 # *************************************************
-
-
 def recvAll(sock, numBytes):
 
     # The buffer
@@ -33,7 +30,6 @@ def recvAll(sock, numBytes):
         recvBuff += tmpBuff
 
     return recvBuff
-
 
 # Command line checks
 if len(sys.argv) != 3:

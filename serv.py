@@ -1,7 +1,6 @@
 import socket
 import sys
 import subprocess
-import time
 
 # Command line checks
 if len(sys.argv) != 2:
