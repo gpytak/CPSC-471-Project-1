@@ -119,9 +119,9 @@ else:
                 while len(fileData) > numSent:
                     numSent += clientSocket.send(fileData[numSent:].encode())
                 print("-----------")
-                print("get - error")
+                print("get -> error")
                 print("[+] Sent", numSent, "bytes.")
-                print("[+] SUCCESSLY RECOGNIZED THAT FILE DO NOT EXISTS")
+                print("[+] FAILURE")
 
             getUserInput()
 
