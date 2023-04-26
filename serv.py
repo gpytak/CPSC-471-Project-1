@@ -121,17 +121,23 @@ else:
 
         if command[0] == "put":
 
+            # The buffer to all data received from the client
+            fileData = ""
+
             # The size of the incoming file
             fileSize = 0
 
             # The buffer containing the file size
             fileSizeBuff = ""
 
-            # first 10 bytes indicate the file's size so we get that
+            # get the size of the buffer indicated by the first 10 bytes
             fileSizeBuff = recvAll(clientSocket, 10)
 
-            # convert the file size to an integer
+            # Get the file size as an integer
             fileSize = int(fileSizeBuff)
+
+            # Get the file data using the first 10 bytes
+            fileData = recvAll(clientSocket, fileSize)
 
             print("-----------")
             print("put")
