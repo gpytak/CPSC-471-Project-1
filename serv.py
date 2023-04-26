@@ -67,7 +67,6 @@ else:
             try:
                 # Open the file
                 fileObj = open(command[1], "r")
-                print("[+] Was able to open file")
             except:
                 print("[-] Unable to locate file")
 
@@ -169,6 +168,11 @@ else:
             clientSocket.close()
 
             exit()
+
+        else:
+
+            print("-----------")
+            print("[-] FAILURE")
 
     print("Waiting for connections...")
 
