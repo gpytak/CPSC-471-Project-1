@@ -55,7 +55,7 @@ else:
 
     def getUserInput():
 
-        # Gets the command from the client
+        # Gets the command and/or file name from the client
         receivedData = clientSocket.recv(bufferSize).decode()
 
         # Separates the command and file name

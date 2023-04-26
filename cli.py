@@ -67,11 +67,13 @@ else:
 
         # ftp> line check for ls and quit
         if len(command) == 1 and (command[0] == "ls" or command[0] == "quit"):
+
             # Gets the individual command from the input (Example: ls file.txt) -> Output: ls
             verify_command = command[0]
 
         # ftp> line check for put and get
         elif len(command) > 1 and (command[0] == "put" or command[0] == "get"):
+
             # Gets the individual command from the input (Example: ls file.txt) -> Output: ls
             verify_command = command[0]
             # Gets the file name from the input (Example: ls file.txt) -> Output: file.txt
@@ -79,9 +81,10 @@ else:
 
         # ftp> line check error message
         else:
+
             print("[-] Please enter the command(s) in the correct format: 'put <filename>' or 'get <filename>' or 'ls' or 'quit'")
 
-            # Send the verified command to the server
+            # Send the user_input command to the server
             clientSocket.send(user_input.encode())
 
         ###################################################################################
@@ -92,7 +95,7 @@ else:
             # Check if the file name exists or not
             if file_name != None:
 
-                # Send the verified command and file name to the server
+                # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
 
                 # The buffer to all data received from the client
@@ -115,7 +118,8 @@ else:
 
                 if fileSize == 0000000000:
                     print("[-] File '", file_name, "' does not exist.")
-                    print("[-] Please enter the command in the correct format: 'get <filename>'")
+                    print(
+                        "[-] Please enter the command in the correct format: 'get <filename>'")
 
                 else:
 
@@ -128,7 +132,8 @@ else:
             else:
 
                 print("[-] File '", file_name, "' does not exist.")
-                print("[-] Please enter the command in the correct format: 'get <filename>'")
+                print(
+                    "[-] Please enter the command in the correct format: 'get <filename>'")
 
         ###################################################################################
 
@@ -139,9 +144,10 @@ else:
             if os.path.isfile(file_name) == False:
 
                 print("[-] File'", file_name, "'does not exist.")
-                print("[-] Please enter the command in the correct format: 'put <filename>'")
+                print(
+                    "[-] Please enter the command in the correct format: 'put <filename>'")
 
-                # Send the verified command and file name to the server
+                # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
 
             # Check if the path of the file exists or not or that the file name is not empty
@@ -150,7 +156,7 @@ else:
                 # Open the file
                 fileObj = open(file_name, "r")
 
-                # Send the verified command and file name to the server
+                # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
 
                 # The number of bytes sent
@@ -197,7 +203,8 @@ else:
             else:
 
                 print("[-] File'", file_name, "'does not exist.")
-                print("[-] Please enter the command in the correct format: 'put <filename>'")
+                print(
+                    "[-] Please enter the command in the correct format: 'put <filename>'")
 
         ###################################################################################
 
