@@ -125,11 +125,6 @@ else:
 
             else:
 
-                fileData = "0000000000"
-                numSent = 0
-                while len(fileData) > numSent:
-                    numSent += clientSocket.send(fileData[numSent:].encode())
-
                 print("-----------")
                 print("[-] FAILURE")
 

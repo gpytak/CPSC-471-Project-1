@@ -92,8 +92,17 @@ else:
         # Verify if the command is 'get'
         if verify_command == "get":
 
+            # Check if the path of the file exists or not
+            if os.path.isfile(file_name) == False:
+
+                print("[-] File '", file_name, "' does not exist.")
+                print("[-] Please enter the command in the correct format: 'get <filename>'")
+
+                # Send the user_input command and file name to the server
+                clientSocket.send(user_input.encode())
+
             # Check if the file name exists or not
-            if file_name != None:
+            elif file_name != None:
 
                 # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
@@ -116,24 +125,19 @@ else:
                 # Get the file size as an integer
                 fileSize = int(fileSizeBuff)
 
-                if fileSize == 0000000000:
-                    print("[-] File '", file_name, "' does not exist.")
-                    print(
-                        "[-] Please enter the command in the correct format: 'get <filename>'")
+                # Get the file data using the first 10 bytes
+                fileData = recvAll(clientSocket, fileSize)
 
-                else:
-
-                    # Get the file data using the first 10 bytes
-                    fileData = recvAll(clientSocket, fileSize)
-
-                    print("[+] Filename:", file_name)
-                    print("[+] Received", fileSize, "bytes.")
+                print("[+] Filename:", file_name)
+                print("[+] Received", fileSize, "bytes.")
 
             else:
 
                 print("[-] File '", file_name, "' does not exist.")
-                print(
-                    "[-] Please enter the command in the correct format: 'get <filename>'")
+                print("[-] Please enter the command in the correct format: 'get <filename>'")
+
+                # Send the user_input command and file name to the server
+                clientSocket.send(user_input.encode())
 
         ###################################################################################
 
