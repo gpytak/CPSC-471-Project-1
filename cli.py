@@ -120,7 +120,6 @@ else:
             try:
                 # Open the file
                 fileObj = open(file_name, "r")
-                print("[+] Was able to open file")
             except:
                 print("[-] Unable to locate file")
                 break
