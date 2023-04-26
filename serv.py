@@ -110,14 +110,13 @@ else:
 
             print("-----------")
             print("get")
-            print("[+] Sent", numSent, "bytes.")
             print("[+] SUCCESS")
 
             getUserInput()
 
         ###################################################################################
 
-        if command[0] == "put":
+        elif command[0] == "put":
 
             # The buffer to all data received from the client
             fileData = ""
@@ -139,14 +138,14 @@ else:
 
             print("-----------")
             print("put")
-            print("[+] Received", fileSize, "bytes.")
             print("[+] SUCCESS")
 
             getUserInput()
 
         ###################################################################################
 
-        if command[0] == "ls":
+        elif command[0] == "ls":
+
             for line in subprocess.getstatusoutput(command[0]):
                 print(line)
 
@@ -158,7 +157,7 @@ else:
 
         ###################################################################################
 
-        if command[0] == "quit":
+        elif command[0] == "quit":
 
             print("-----------")
             print("quit")
