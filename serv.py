@@ -1,6 +1,7 @@
 import socket
 import sys
 import subprocess
+import os.path
 
 # Command line checks
 if len(sys.argv) != 2:
@@ -64,55 +65,66 @@ else:
         if command[0] == "get":
 
             # Check to see if the file is available or not
-            try:
+            if os.path.isfile(command[1]):
                 # Open the file
                 fileObj = open(command[1], "r")
-            except:
+                print("[+] Was able to open file")
+                # The number of bytes sent
+                numSent = 0
+
+                # The file data
+                fileData = None
+
+                # Keep sending until all is sent
+                while True:
+
+                    # Read the data
+                    fileData = fileObj.read(bufferSize)
+
+                    # Make sure we did not hit EOF
+                    if fileData:
+
+                        # get the size of the data
+                        dataSizeStr = str(len(fileData))
+
+                        # makes sure the dataSize is 10
+                        while len(dataSizeStr) < 10:
+                            dataSizeStr = "0" + dataSizeStr
+
+                        # add the data size before the rest of the command
+                        fileData = dataSizeStr + fileData
+
+                        # The number of bytes sent
+                        numSent = 0
+
+                        # Send the data!
+                        while len(fileData) > numSent:
+                            numSent += clientSocket.send(
+                                fileData[numSent:].encode())
+
+                    else:
+                        # Close the file because we're done
+
+                        fileObj.close()
+                        break
+
+                print("-----------")
+                print("get")
+                print("[+] Sent", numSent, "bytes.")
+                print("[+] SUCCESS")
+            else:
                 print("[-] Unable to locate file")
-
-            # The number of bytes sent
-            numSent = 0
-
-            # The file data
-            fileData = None
-
-            # Keep sending until all is sent
-            while True:
-
-                # Read the data
-                fileData = fileObj.read(bufferSize)
-
-                # Make sure we did not hit EOF
-                if fileData:
-
-                    # get the size of the data
-                    dataSizeStr = str(len(fileData))
-
-                    # makes sure the dataSize is 10
-                    while len(dataSizeStr) < 10:
-                        dataSizeStr = "0" + dataSizeStr
-
-                    # add the data size before the rest of the command
-                    fileData = dataSizeStr + fileData
-
-                    # The number of bytes sent
-                    numSent = 0
-
-                    # Send the data!
-                    while len(fileData) > numSent:
-                        numSent += clientSocket.send(
-                            fileData[numSent:].encode())
-
-                else:
-                    # Close the file because we're done
-                    fileObj.close()
-                    break
-
-            print("-----------")
-            print("get")
-            print("[+] SUCCESS")
+                fileData = "0000000000"
+                numSent = 0
+                while len(fileData) > numSent:
+                    numSent += clientSocket.send(fileData[numSent:].encode())
+                print("-----------")
+                print("get - error")
+                print("[+] Sent", numSent, "bytes.")
+                print("[+] SUCCESSLY RECOGNIZED THAT FILE DO NOT EXISTS")
 
             getUserInput()
+
 
         ###################################################################################
 
