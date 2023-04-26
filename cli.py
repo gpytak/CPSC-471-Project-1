@@ -1,5 +1,6 @@
 import socket
 import sys
+import os.path
 
 # ************************************************
 # Receives the specified number of bytes
@@ -105,68 +106,70 @@ else:
             # Get the file size as an integer
             fileSize = int(fileSizeBuff)
 
-            # Get the file data using the first 10 bytes
-            fileData = recvAll(clientSocket, fileSize)
+            if fileSize == 0000000000:
+                print("[+] File '", file_name, "' do not exist.")
+            else:
+                # Get the file data using the first 10 bytes
+                fileData = recvAll(clientSocket, fileSize)
 
-            print("[+] Filename:", file_name)
-            print("[+] Received", fileSize, "bytes.")
+                print("[+] Filename:", file_name)
+                print("[+] Received", fileSize, "bytes.")
 
         ###################################################################################
 
         # Verify if the command is 'put'
         if verify_command == "put":
 
-            # Check to see if the file is available or not
-            try:
+            if os.path.isfile(file_name):
                 # Open the file
                 fileObj = open(file_name, "r")
-            except:
+                print("[+] Was able to open file") 
+                # send the command so the server knows which command
+                clientSocket.send(verify_command.encode())
+
+                # The number of bytes sent
+                numSent = 0
+
+                # The file data
+                fileData = None
+
+                # Keep sending until all is sent
+                while True:
+
+                    # Read the data
+                    fileData = fileObj.read(bufferSize)
+
+                    # Make sure we did not hit EOF
+                    if fileData:
+
+                        # get the size of the data
+                        dataSizeStr = str(len(fileData))
+
+                        # makes sure the dataSize is 10
+                        while len(dataSizeStr) < 10:
+                            dataSizeStr = "0" + dataSizeStr
+
+                        # add the data size before the rest of the command
+                        fileData = dataSizeStr + fileData
+
+                        # The number of bytes sent
+                        numSent = 0
+
+                        # Send the data!
+                        while len(fileData) > numSent:
+                            numSent += clientSocket.send(
+                                fileData[numSent:].encode())
+
+                    else:
+                        # Close the file because we're done
+                        fileObj.close()
+                        break
+
+                print("[+] Filename:", file_name)
+                print("[+] Sent", numSent, "bytes.")
+            else:
                 print("[-] Unable to locate file")
-                break
 
-            # send the command so the server knows which command
-            clientSocket.send(verify_command.encode())
-
-            # The number of bytes sent
-            numSent = 0
-
-            # The file data
-            fileData = None
-
-            # Keep sending until all is sent
-            while True:
-
-                # Read the data
-                fileData = fileObj.read(bufferSize)
-
-                # Make sure we did not hit EOF
-                if fileData:
-
-                    # get the size of the data
-                    dataSizeStr = str(len(fileData))
-
-                    # makes sure the dataSize is 10
-                    while len(dataSizeStr) < 10:
-                        dataSizeStr = "0" + dataSizeStr
-
-                    # add the data size before the rest of the command
-                    fileData = dataSizeStr + fileData
-
-                    # The number of bytes sent
-                    numSent = 0
-
-                    # Send the data!
-                    while len(fileData) > numSent:
-                        numSent += clientSocket.send(
-                            fileData[numSent:].encode())
-
-                else:
-                    # Close the file because we're done
-                    fileObj.close()
-                    break
-
-            print("[+] Filename:", file_name)
-            print("[+] Sent", numSent, "bytes.")
 
         ###################################################################################
 
