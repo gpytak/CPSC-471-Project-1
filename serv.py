@@ -151,7 +151,7 @@ else:
         if command[0] == "ls":
             for line in subprocess.getstatusoutput(command[0]):
                 print(line)
-
+    
             print("-----------")
             print("ls")
             print("[+] SUCCESS")
