@@ -186,6 +186,4 @@ else:
             # Send the verified command to the server
             clientSocket.send(verify_command.encode())
 
-            # Close the socket and the file
-            clientSocket.close()
             break
