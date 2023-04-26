@@ -2,7 +2,7 @@
 Daniel Chen Wu as d.wu@csu.fullerton.edu  
 Jose Morales as j_morales@csu.fullerton.com  
 Gregory Pytak as gpytak@csu.fullerton.edu  
-Luis Venegas as Luisvenegas214@csu.Fullerton.edu  
+Luis Venegas as Luisvenegas214@csu.fullerton.edu  
 Daniel Yoshida as dtyoshid@csu.fullerton.edu
 ## Programming language used: Python
 ## Follow the steps below to execute this code using Python:
@@ -15,3 +15,4 @@ ftp> put <filename>
 ftp> ls
 ftp> quit
 ```
+### All invalid inputs are checked and reprompts the user for a correct input
