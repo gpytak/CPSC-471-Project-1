@@ -66,9 +66,10 @@ else:
 
             # Check to see if the file is available or not
             if os.path.isfile(command[1]):
+
                 # Open the file
                 fileObj = open(command[1], "r")
-                print("[+] Was able to open file")
+
                 # The number of bytes sent
                 numSent = 0
 
@@ -109,22 +110,21 @@ else:
                         break
 
                 print("-----------")
-                print("get")
-                print("[+] Sent", numSent, "bytes.")
                 print("[+] SUCCESS")
+
             else:
-                print("[-] Unable to locate file")
+
                 fileData = "0000000000"
                 numSent = 0
                 while len(fileData) > numSent:
                     numSent += clientSocket.send(fileData[numSent:].encode())
+
                 print("-----------")
-                print("get -> error")
-                print("[+] Sent", numSent, "bytes.")
-                print("[+] FAILURE")
+                print("[-] FAILURE")
+
+                exit()
 
             getUserInput()
-
 
         ###################################################################################
 
@@ -149,7 +149,6 @@ else:
             fileData = recvAll(clientSocket, fileSize)
 
             print("-----------")
-            print("put")
             print("[+] SUCCESS")
 
             getUserInput()
@@ -162,7 +161,6 @@ else:
                 print(line)
 
             print("-----------")
-            print("ls")
             print("[+] SUCCESS")
 
             getUserInput()
@@ -172,11 +170,11 @@ else:
         elif command[0] == "quit":
 
             print("-----------")
-            print("quit")
             print("[+] SUCCESS")
 
-            # Close the socket and the file
+            # Close the sockets
             clientSocket.close()
+            serverSocket.close()
 
             exit()
 

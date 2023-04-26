@@ -107,8 +107,12 @@ else:
             fileSize = int(fileSizeBuff)
 
             if fileSize == 0000000000:
-                print("[+] File '", file_name, "' do not exist.")
+                print("[-] File '", file_name, "' does not exist.")
+
+                exit()
+
             else:
+
                 # Get the file data using the first 10 bytes
                 fileData = recvAll(clientSocket, fileSize)
 
@@ -121,10 +125,11 @@ else:
         if verify_command == "put":
 
             if os.path.isfile(file_name):
+
                 # Open the file
                 fileObj = open(file_name, "r")
-                print("[+] Was able to open file") 
-                # send the command so the server knows which command
+
+                # Send the verified command to the server
                 clientSocket.send(verify_command.encode())
 
                 # The number of bytes sent
@@ -167,9 +172,10 @@ else:
 
                 print("[+] Filename:", file_name)
                 print("[+] Sent", numSent, "bytes.")
-            else:
-                print("[-] Unable to locate file")
 
+            else:
+
+                exit()
 
         ###################################################################################
 
@@ -186,5 +192,8 @@ else:
 
             # Send the verified command to the server
             clientSocket.send(verify_command.encode())
+
+            # Close the socket
+            clientSocket.close()
 
             break
