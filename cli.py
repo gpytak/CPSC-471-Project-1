@@ -202,7 +202,7 @@ else:
         if verify_command == "ls":
 
             # Send the verified command to the server
-            clientSocket.send(user_input.encode())
+            clientSocket.send(verify_command.encode())
 
         ###################################################################################
 
