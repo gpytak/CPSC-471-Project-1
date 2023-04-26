@@ -9,6 +9,8 @@ import sys
 # @param numBytes - the number of bytes to receive
 # @return - the bytes received
 # *************************************************
+
+
 def recvAll(sock, numBytes):
 
     # The buffer
@@ -41,7 +43,17 @@ else:
     # Buffer size
     bufferSize = 4096
 
-    SPACER = " "
+    # Sends the address of the server
+    serverAddress = sys.argv[1]
+
+    # Sends the port number of the server
+    serverPort = int(sys.argv[2])
+
+    # Create a socket
+    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Connect to the server
+    clientSocket.connect((serverAddress, serverPort))
 
     # Keep sending until all is sent
     while True:
@@ -76,18 +88,6 @@ else:
         # Verify if the command is 'get'
         if verify_command == "get":
 
-            # Sends the address of the server
-            serverAddress = sys.argv[1]
-
-            # Sends the port number of the server
-            serverPort = int(sys.argv[2])
-
-            # Create a socket
-            clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-            # Connect to the server
-            clientSocket.connect((serverAddress, serverPort))
-
             # Send the verified command and file name to the server
             clientSocket.send(user_input.encode())
 
@@ -115,24 +115,10 @@ else:
             print("[+] Filename:", file_name)
             print("[+] Received", fileSize, "bytes.")
 
-            clientSocket.close()
-
         ###################################################################################
 
         # Verify if the command is 'put'
         if verify_command == "put":
-
-            # Sends the address of the server
-            serverAddress = sys.argv[1]
-
-            # Sends the port number of the server
-            serverPort = int(sys.argv[2])
-
-            # Create a socket
-            clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-            # Connect to the server
-            clientSocket.connect((serverAddress, serverPort))
 
             # Check to see if the file is available or not
             try:
@@ -182,52 +168,23 @@ else:
                 else:
                     # Close the file because we're done
                     fileObj.close()
-                    clientSocket.close()
                     break
 
             print("[+] Filename:", file_name)
             print("[+] Sent", numSent, "bytes.")
-
-            clientSocket.close()
 
         ###################################################################################
 
         # Verify if the command is 'ls'
         if verify_command == "ls":
 
-            # Sends the address of the server
-            serverAddress = sys.argv[1]
-
-            # Sends the port number of the server
-            serverPort = int(sys.argv[2])
-
-            # Create a socket
-            clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-            # Connect to the server
-            clientSocket.connect((serverAddress, serverPort))
-
             # Send the verified command to the server
             clientSocket.send(verify_command.encode())
-
-            clientSocket.close()
 
         ###################################################################################
 
         # Verify if the command is 'quit'
         if verify_command == "quit":
-
-            # Sends the address of the server
-            serverAddress = sys.argv[1]
-
-            # Sends the port number of the server
-            serverPort = int(sys.argv[2])
-
-            # Create a socket
-            clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-            # Connect to the server
-            clientSocket.connect((serverAddress, serverPort))
 
             # Send the verified command to the server
             clientSocket.send(verify_command.encode())
@@ -235,6 +192,3 @@ else:
             # Close the socket and the file
             clientSocket.close()
             break
-
-    # Close the socket
-    clientSocket.close()

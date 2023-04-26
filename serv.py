@@ -1,6 +1,7 @@
 import socket
 import sys
 import subprocess
+import time
 
 # Command line checks
 if len(sys.argv) != 2:
@@ -52,109 +53,126 @@ else:
     # Buffer size
     bufferSize = 4096
 
+    def getUserInput():
+
+        # Gets the command from the client
+        receivedData = clientSocket.recv(bufferSize).decode()
+
+        command = receivedData.split(" ")
+
+        ###################################################################################
+
+        if command[0] == "get":
+
+            # Check to see if the file is available or not
+            try:
+                # Open the file
+                fileObj = open(command[1], "r")
+                print("[+] Was able to open file")
+            except:
+                print("[-] Unable to locate file")
+
+            # The number of bytes sent
+            numSent = 0
+
+            # The file data
+            fileData = None
+
+            # Keep sending until all is sent
+            while True:
+
+                # Read the data
+                fileData = fileObj.read(bufferSize)
+
+                # Make sure we did not hit EOF
+                if fileData:
+
+                    # get the size of the data
+                    dataSizeStr = str(len(fileData))
+
+                    # makes sure the dataSize is 10
+                    while len(dataSizeStr) < 10:
+                        dataSizeStr = "0" + dataSizeStr
+
+                    # add the data size before the rest of the command
+                    fileData = dataSizeStr + fileData
+
+                    # The number of bytes sent
+                    numSent = 0
+
+                    # Send the data!
+                    while len(fileData) > numSent:
+                        numSent += clientSocket.send(
+                            fileData[numSent:].encode())
+
+                else:
+                    # Close the file because we're done
+                    fileObj.close()
+                    break
+
+            print("-----------")
+            print("get")
+            print("[+] Sent", numSent, "bytes.")
+            print("[+] SUCCESS")
+
+            getUserInput()
+
+        ###################################################################################
+
+        if command[0] == "put":
+
+            # The size of the incoming file
+            fileSize = 0
+
+            # The buffer containing the file size
+            fileSizeBuff = ""
+
+            # first 10 bytes indicate the file's size so we get that
+            fileSizeBuff = recvAll(clientSocket, 10)
+
+            # convert the file size to an integer
+            fileSize = int(fileSizeBuff)
+
+            print("-----------")
+            print("put")
+            print("[+] Received", fileSize, "bytes.")
+            print("[+] SUCCESS")
+
+            getUserInput()
+
+        ###################################################################################
+
+        if command[0] == "ls":
+            for line in subprocess.getstatusoutput(command[0]):
+                print(line)
+
+            print("-----------")
+            print("ls")
+            print("[+] SUCCESS")
+
+            getUserInput()
+
+        ###################################################################################
+
+        if command[0] == "quit":
+
+            print("-----------")
+            print("quit")
+            print("[+] SUCCESS")
+
+            # Close the socket and the file
+            clientSocket.close()
+
+            exit()
+
     print("Waiting for connections...")
 
     # Accept connections
     clientSocket, addr = serverSocket.accept()
 
-    print("Accepted connection from client: ", addr)
-    print("\n")
+    with clientSocket:
 
-    # Gets the command from the client
-    receivedData = clientSocket.recv(bufferSize).decode()
+        print("Accepted connection from client: ", addr)
+        print("\n")
 
-    command = receivedData.split(" ")
-
-    if command[0] == "get":
-
-        # Check to see if the file is available or not
-        try:
-            # Open the file
-            fileObj = open(command[1], "r")
-            print("[+] Was able to open file")
-        except:
-            print("[-] Unable to locate file")
-
-        # The number of bytes sent
-        numSent = 0
-
-        # The file data
-        fileData = None
-
-        # Keep sending until all is sent
-        while True:
-
-            # Read the data
-            fileData = fileObj.read(bufferSize)
-
-            # Make sure we did not hit EOF
-            if fileData:
-
-                # get the size of the data
-                dataSizeStr = str(len(fileData))
-
-                # makes sure the dataSize is 10
-                while len(dataSizeStr) < 10:
-                    dataSizeStr = "0" + dataSizeStr
-
-                # add the data size before the rest of the command
-                fileData = dataSizeStr + fileData
-
-                # The number of bytes sent
-                numSent = 0
-
-                # Send the data!
-                while len(fileData) > numSent:
-                    numSent += clientSocket.send(
-                        fileData[numSent:].encode())
-
-            else:
-                # Close the file because we're done
-                fileObj.close()
-                clientSocket.close()
-                break
-
-        print("[+] Sent", numSent, "bytes.")
-        print("[+] SUCCESS")
-
-        clientSocket.close()
-
-    ###################################################################################
-
-    if command[0] == "put":
-
-        # The size of the incoming file
-        fileSize = 0
-
-        # The buffer containing the file size
-        fileSizeBuff = ""
-
-        # first 10 bytes indicate the file's size so we get that
-        fileSizeBuff = recvAll(clientSocket, 10)
-
-        # convert the file size to an integer
-        fileSize = int(fileSizeBuff)
-
-        print("[+] Received", fileSize, "bytes.")
-        print("[+] SUCCESS")
-
-        # Close the socket and the file
-        clientSocket.close()
-
-    ###################################################################################
-
-    if command[0] == "ls":
-        for line in subprocess.getstatusoutput(command[0]):
-            print(line)
-
-        print("[+] SUCCESS")
-
-        clientSocket.close()
-
-    ###################################################################################
-
-    if command[0] == "quit":
-        print("[+] SUCCESS")
-
-        # Close the socket and the file
-        clientSocket.close()
+        getUserInput()
