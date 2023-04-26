@@ -89,6 +89,7 @@ else:
         # Verify if the command is 'get'
         if verify_command == "get":
 
+            # Check if the file name exists or not
             if file_name != None:
 
                 # Send the verified command and file name to the server
@@ -106,7 +107,7 @@ else:
                 # The buffer containing the file size
                 fileSizeBuff = ""
 
-                # get the size of the buffer indicated by the first 10 bytes
+                # Get the size of the buffer indicated by the first 10 bytes
                 fileSizeBuff = recvAll(clientSocket, 10)
 
                 # Get the file size as an integer
@@ -134,6 +135,7 @@ else:
         # Verify if the command is 'put'
         if verify_command == "put":
 
+            # Check if the path of the file exists or not
             if os.path.isfile(file_name) == False:
 
                 print("[-] File'", file_name, "'does not exist.")
@@ -142,6 +144,7 @@ else:
                 # Send the verified command and file name to the server
                 clientSocket.send(user_input.encode())
 
+            # Check if the path of the file exists or not or that the file name is not empty
             elif os.path.isfile(file_name) or file_name != None:
 
                 # Open the file
@@ -165,14 +168,14 @@ else:
                     # Make sure we did not hit EOF
                     if fileData:
 
-                        # get the size of the data
+                        # Get the size of the data
                         dataSizeStr = str(len(fileData))
 
-                        # makes sure the dataSize is 10
+                        # Makes sure the dataSize is 10
                         while len(dataSizeStr) < 10:
                             dataSizeStr = "0" + dataSizeStr
 
-                        # add the data size before the rest of the command
+                        # Add the data size before the rest of the command
                         fileData = dataSizeStr + fileData
 
                         # The number of bytes sent

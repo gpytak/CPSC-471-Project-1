@@ -58,12 +58,15 @@ else:
         # Gets the command from the client
         receivedData = clientSocket.recv(bufferSize).decode()
 
+        # Separates the command and file name
         command = receivedData.split(" ")
 
         ###################################################################################
 
+        # Verify if the command is 'get'
         if command[0] == "get":
 
+            # Check if the length of the command is 3
             if len(receivedData) == 3:
 
                 print("-----------")
@@ -71,7 +74,7 @@ else:
 
                 getUserInput()
 
-            # Check to see if the file is available or not
+            # Check if the path of the file exists or not
             if os.path.isfile(command[1]):
 
                 # Open the file
@@ -92,14 +95,14 @@ else:
                     # Make sure we did not hit EOF
                     if fileData:
 
-                        # get the size of the data
+                        # Get the size of the data
                         dataSizeStr = str(len(fileData))
 
-                        # makes sure the dataSize is 10
+                        # Makes sure the dataSize is 10
                         while len(dataSizeStr) < 10:
                             dataSizeStr = "0" + dataSizeStr
 
-                        # add the data size before the rest of the command
+                        # Add the data size before the rest of the command
                         fileData = dataSizeStr + fileData
 
                         # The number of bytes sent
@@ -112,7 +115,6 @@ else:
 
                     else:
                         # Close the file because we're done
-
                         fileObj.close()
                         break
 
@@ -135,8 +137,10 @@ else:
 
         ###################################################################################
 
+        # Verify if the command is 'put'
         elif command[0] == "put":
 
+            # Check if the length of the command is 3
             if len(receivedData) == 3:
 
                 print("-----------")
@@ -144,6 +148,7 @@ else:
 
                 getUserInput()
 
+            # Check if the path of the file exists or not
             elif os.path.isfile(command[1]) == False:
 
                 print("-----------")
@@ -162,7 +167,7 @@ else:
                 # The buffer containing the file size
                 fileSizeBuff = ""
 
-                # get the size of the buffer indicated by the first 10 bytes
+                # Get the size of the buffer indicated by the first 10 bytes
                 fileSizeBuff = recvAll(clientSocket, 10)
 
                 # Get the file size as an integer
@@ -178,6 +183,7 @@ else:
 
         ###################################################################################
 
+        # Verify if the command is 'ls'
         elif command[0] == "ls":
 
             for line in subprocess.getstatusoutput(command[0]):
@@ -190,6 +196,7 @@ else:
 
         ###################################################################################
 
+        # Verify if the command is 'quit'
         elif command[0] == "quit":
 
             print("-----------")
