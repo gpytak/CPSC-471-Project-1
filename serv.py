@@ -137,28 +137,44 @@ else:
 
         elif command[0] == "put":
 
-            # The buffer to all data received from the client
-            fileData = ""
+            if len(receivedData) == 3:
 
-            # The size of the incoming file
-            fileSize = 0
+                print("-----------")
+                print("[-] FAILURE")
 
-            # The buffer containing the file size
-            fileSizeBuff = ""
+                getUserInput()
 
-            # get the size of the buffer indicated by the first 10 bytes
-            fileSizeBuff = recvAll(clientSocket, 10)
+            elif os.path.isfile(command[1]) == False:
 
-            # Get the file size as an integer
-            fileSize = int(fileSizeBuff)
+                print("-----------")
+                print("[-] FAILURE")
 
-            # Get the file data using the first 10 bytes
-            fileData = recvAll(clientSocket, fileSize)
+                getUserInput()
 
-            print("-----------")
-            print("[+] SUCCESS")
+            else:
 
-            getUserInput()
+                # The buffer to all data received from the client
+                fileData = ""
+
+                # The size of the incoming file
+                fileSize = 0
+
+                # The buffer containing the file size
+                fileSizeBuff = ""
+
+                # get the size of the buffer indicated by the first 10 bytes
+                fileSizeBuff = recvAll(clientSocket, 10)
+
+                # Get the file size as an integer
+                fileSize = int(fileSizeBuff)
+
+                # Get the file data using the first 10 bytes
+                fileData = recvAll(clientSocket, fileSize)
+
+                print("-----------")
+                print("[+] SUCCESS")
+
+                getUserInput()
 
         ###################################################################################
 

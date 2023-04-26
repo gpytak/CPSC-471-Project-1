@@ -2,41 +2,41 @@ import socket
 import sys
 import os.path
 
-# ************************************************
-# Receives the specified number of bytes
-# from the specified socket
-# @param sock - the socket from which to receive
-# @param numBytes - the number of bytes to receive
-# @return - the bytes received
-# *************************************************
-def recvAll(sock, numBytes):
-
-    # The buffer
-    recvBuff = ""
-
-    # The temporary buffer
-    tmpBuff = ""
-
-    # Keep receiving till all is received
-    while len(recvBuff) < numBytes:
-
-        # Attempt to receive bytes
-        tmpBuff = sock.recv(numBytes).decode()
-
-        # The other side has closed the socket
-        if not tmpBuff:
-            break
-
-        # Add the received bytes to the buffer
-        recvBuff += tmpBuff
-
-    return recvBuff
-
 # Command line checks
 if len(sys.argv) != 3:
     print("USAGE: python3 cli.py <server machine> <server port>")
 
 else:
+    # ************************************************
+    # Receives the specified number of bytes
+    # from the specified socket
+    # @param sock - the socket from which to receive
+    # @param numBytes - the number of bytes to receive
+    # @return - the bytes received
+    # *************************************************
+    def recvAll(sock, numBytes):
+
+        # The buffer
+        recvBuff = ""
+
+        # The temporary buffer
+        tmpBuff = ""
+
+        # Keep receiving till all is received
+        while len(recvBuff) < numBytes:
+
+            # Attempt to receive bytes
+            tmpBuff = sock.recv(numBytes).decode()
+
+            # The other side has closed the socket
+            if not tmpBuff:
+                break
+
+            # Add the received bytes to the buffer
+            recvBuff += tmpBuff
+
+        return recvBuff
+
     # Buffer size
     bufferSize = 4096
 
@@ -80,7 +80,7 @@ else:
         # ftp> line check error message
         else:
             print("[-] Please enter the command(s) in the correct format: 'put <filename>' or 'get <filename>' or 'ls' or 'quit'")
-            
+
             # Send the verified command to the server
             clientSocket.send(user_input.encode())
 
@@ -134,7 +134,15 @@ else:
         # Verify if the command is 'put'
         if verify_command == "put":
 
-            if os.path.isfile(file_name):
+            if os.path.isfile(file_name) == False:
+
+                print("[-] File'", file_name, "'does not exist.")
+                print("[-] Please enter the command in the correct format: 'put <filename>'")
+
+                # Send the verified command and file name to the server
+                clientSocket.send(user_input.encode())
+
+            elif os.path.isfile(file_name) or file_name != None:
 
                 # Open the file
                 fileObj = open(file_name, "r")
@@ -186,14 +194,15 @@ else:
             else:
 
                 print("[-] File'", file_name, "'does not exist.")
+                print("[-] Please enter the command in the correct format: 'put <filename>'")
 
         ###################################################################################
 
         # Verify if the command is 'ls'
         if verify_command == "ls":
 
-                # Send the verified command to the server
-                clientSocket.send(user_input.encode())
+            # Send the verified command to the server
+            clientSocket.send(user_input.encode())
 
         ###################################################################################
 
