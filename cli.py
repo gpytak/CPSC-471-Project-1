@@ -61,6 +61,8 @@ else:
         # Separate the "ftp>" and "command"
         command = user_input.split(" ")
 
+        verify_command = ""
+
         ###################################################################################
 
         # ftp> line check for ls and quit
@@ -77,47 +79,55 @@ else:
 
         # ftp> line check error message
         else:
-            print("Please enter the command(s) in the correct format: 'put <filename>' or 'get <filename>' or 'ls' or 'quit'")
-            break
+            print("[-] Please enter the command(s) in the correct format: 'put <filename>' or 'get <filename>' or 'ls' or 'quit'")
+            
+            # Send the verified command to the server
+            clientSocket.send(user_input.encode())
 
         ###################################################################################
 
         # Verify if the command is 'get'
         if verify_command == "get":
 
-            # Send the verified command and file name to the server
-            clientSocket.send(user_input.encode())
+            if file_name != None:
 
-            # The buffer to all data received from the client
-            fileData = ""
+                # Send the verified command and file name to the server
+                clientSocket.send(user_input.encode())
 
-            # The temporary buffer to store the received data
-            recvBuff = ""
+                # The buffer to all data received from the client
+                fileData = ""
 
-            # The size of the incoming file
-            fileSize = 0
+                # The temporary buffer to store the received data
+                recvBuff = ""
 
-            # The buffer containing the file size
-            fileSizeBuff = ""
+                # The size of the incoming file
+                fileSize = 0
 
-            # get the size of the buffer indicated by the first 10 bytes
-            fileSizeBuff = recvAll(clientSocket, 10)
+                # The buffer containing the file size
+                fileSizeBuff = ""
 
-            # Get the file size as an integer
-            fileSize = int(fileSizeBuff)
+                # get the size of the buffer indicated by the first 10 bytes
+                fileSizeBuff = recvAll(clientSocket, 10)
 
-            if fileSize == 0000000000:
-                print("[-] File '", file_name, "' does not exist.")
+                # Get the file size as an integer
+                fileSize = int(fileSizeBuff)
 
-                exit()
+                if fileSize == 0000000000:
+                    print("[-] File '", file_name, "' does not exist.")
+                    print("[-] Please enter the command in the correct format: 'get <filename>'")
+
+                else:
+
+                    # Get the file data using the first 10 bytes
+                    fileData = recvAll(clientSocket, fileSize)
+
+                    print("[+] Filename:", file_name)
+                    print("[+] Received", fileSize, "bytes.")
 
             else:
 
-                # Get the file data using the first 10 bytes
-                fileData = recvAll(clientSocket, fileSize)
-
-                print("[+] Filename:", file_name)
-                print("[+] Received", fileSize, "bytes.")
+                print("[-] File '", file_name, "' does not exist.")
+                print("[-] Please enter the command in the correct format: 'get <filename>'")
 
         ###################################################################################
 
@@ -129,8 +139,8 @@ else:
                 # Open the file
                 fileObj = open(file_name, "r")
 
-                # Send the verified command to the server
-                clientSocket.send(verify_command.encode())
+                # Send the verified command and file name to the server
+                clientSocket.send(user_input.encode())
 
                 # The number of bytes sent
                 numSent = 0
@@ -175,15 +185,15 @@ else:
 
             else:
 
-                exit()
+                print("[-] File'", file_name, "'does not exist.")
 
         ###################################################################################
 
         # Verify if the command is 'ls'
         if verify_command == "ls":
 
-            # Send the verified command to the server
-            clientSocket.send(verify_command.encode())
+                # Send the verified command to the server
+                clientSocket.send(user_input.encode())
 
         ###################################################################################
 

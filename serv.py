@@ -64,6 +64,13 @@ else:
 
         if command[0] == "get":
 
+            if len(receivedData) == 3:
+
+                print("-----------")
+                print("[-] FAILURE")
+
+                getUserInput()
+
             # Check to see if the file is available or not
             if os.path.isfile(command[1]):
 
@@ -112,6 +119,8 @@ else:
                 print("-----------")
                 print("[+] SUCCESS")
 
+                getUserInput()
+
             else:
 
                 fileData = "0000000000"
@@ -122,9 +131,7 @@ else:
                 print("-----------")
                 print("[-] FAILURE")
 
-                exit()
-
-            getUserInput()
+                getUserInput()
 
         ###################################################################################
 
@@ -182,6 +189,8 @@ else:
 
             print("-----------")
             print("[-] FAILURE")
+
+            getUserInput()
 
     print("Waiting for connections...")
 
