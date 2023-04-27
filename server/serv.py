@@ -152,10 +152,6 @@ else:
                 getUserInput()
 
             else:
-                #sending a header with error code FFFFFFFFFF
-                fileHeader = "FFFFFFFFFF"
-                # Send the data!
-                clientSocket.send(fileHeader.encode())
                             
                 print("-----------")
                 print("[-] FAILURE")
