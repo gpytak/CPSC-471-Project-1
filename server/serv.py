@@ -239,6 +239,7 @@ else:
 
             # Add the data size before the rest of the command
             fileHeader = dataSizeStr + fileHeader
+
             # The number of bytes sent
             numSent = 0
 

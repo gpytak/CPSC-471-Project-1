@@ -131,6 +131,7 @@ else:
                     # Get the file data using the first 10 bytes
                     fileData = recvAll(clientSocket, fileSize)
 
+                    # Generate file
                     with open(file_name, 'w') as file:
                         file.write(fileData)
 
