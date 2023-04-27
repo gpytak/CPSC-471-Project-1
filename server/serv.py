@@ -53,6 +53,9 @@ else:
     # Buffer size
     bufferSize = 4096
 
+    # Getting the path of the folder
+    sys.path.insert(0, "..")
+
     def getUserInput():
 
         # Gets the command and/or file name from the client
@@ -78,15 +81,15 @@ else:
             if os.path.isfile(command[1]):
 
                 # Open the file
-                fileObj = open(command[1], "r")
+                fileObj = open(sys.path[1] + "/" + command[1], "r")
 
                 # The number of bytes sent
                 numSent = 0
 
                 # The file data
                 fileData = None
-                
-                # set a flag for 0 byte
+
+                # Set a flag for 0 byte
                 zeroFilesent = False
 
                 # Keep sending until all is sent
@@ -116,12 +119,15 @@ else:
                             numSent += clientSocket.send(
                                 fileData[numSent:].encode())
 
-                    #file exists but is 0 byte
+                    # File exists but is 0 byte
                     elif os.stat(command[1]).st_size == 0 and zeroFilesent == False:
+
                         dataSizeStr = "0"
+
                         # Makes sure the dataSize is 10
                         while len(dataSizeStr) < 10:
                             dataSizeStr = "0" + dataSizeStr
+
                         # Add the data size before the rest of the command
                         fileData = dataSizeStr + fileData
 
@@ -133,8 +139,7 @@ else:
                             numSent += clientSocket.send(
                                 fileData[numSent:].encode())
                         zeroFilesent = True
-        
-                            
+
                     else:
                         # Close the file because we're done
                         fileObj.close()
@@ -157,23 +162,7 @@ else:
         # Verify if the command is 'put'
         elif command[0] == "put":
 
-            # Check if the length of the command is 3
-            if len(receivedData) == 3:
-
-                print("-----------")
-                print("[-] FAILURE")
-
-                getUserInput()
-
-            # Check if the path of the file exists or not
-            elif os.path.isfile(command[1]) == False:
-
-                print("-----------")
-                print("[-] FAILURE")
-
-                getUserInput()
-
-            else:
+            if len(receivedData) != 3:
 
                 # The buffer to all data received from the client
                 fileData = ""
@@ -193,8 +182,18 @@ else:
                 # Get the file data using the first 10 bytes
                 fileData = recvAll(clientSocket, fileSize)
 
+                with open(command[1], 'w') as file:
+                    file.write(fileData)
+
                 print("-----------")
                 print("[+] SUCCESS")
+
+                getUserInput()
+
+            else:
+
+                print("-----------")
+                print("[-] FAILURE")
 
                 getUserInput()
 

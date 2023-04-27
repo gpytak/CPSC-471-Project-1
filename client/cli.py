@@ -52,6 +52,9 @@ else:
     # Connect to the server
     clientSocket.connect((serverAddress, serverPort))
 
+    # Getting the path of the folder
+    sys.path.insert(0, "..")
+
     # Keep sending until all is sent
     while True:
 
@@ -92,17 +95,7 @@ else:
         # Verify if the command is 'get'
         if verify_command == "get":
 
-            # Check if the path of the file exists or not
-            if os.path.isfile(file_name) == False:
-
-                print("[-] File '", file_name, "' does not exist.")
-                print("[-] Please enter the command in the correct format: 'get <filename>'")
-
-                # Send the user_input command and file name to the server
-                clientSocket.send(user_input.encode())
-
-            # Check if the file name exists or not
-            elif file_name != None:
+            if file_name != None:
 
                 # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
@@ -128,11 +121,14 @@ else:
                 # Get the file data using the first 10 bytes
                 fileData = recvAll(clientSocket, fileSize)
 
+                with open(file_name, 'w') as file:
+                    file.write(fileData)
+
                 print("[+] Filename:", file_name)
                 print("[+] Received", fileSize, "bytes.")
 
             else:
-
+                
                 print("[-] File '", file_name, "' does not exist.")
                 print("[-] Please enter the command in the correct format: 'get <filename>'")
 
@@ -145,29 +141,22 @@ else:
         if verify_command == "put":
 
             # Check if the path of the file exists or not
-            if os.path.isfile(file_name) == False:
-
-                print("[-] File'", file_name, "'does not exist.")
-                print(
-                    "[-] Please enter the command in the correct format: 'put <filename>'")
+            if os.path.isfile(file_name):
 
                 # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
-
-            # Check if the path of the file exists or not or that the file name is not empty
-            elif os.path.isfile(file_name) or file_name != None:
 
                 # Open the file
-                fileObj = open(file_name, "r")
-
-                # Send the user_input command and file name to the server
-                clientSocket.send(user_input.encode())
+                fileObj = open(sys.path[1] + "/" + command[1], "r")
 
                 # The number of bytes sent
                 numSent = 0
 
                 # The file data
                 fileData = None
+
+                # Set a flag for 0 byte
+                zeroFilesent = False
 
                 # Keep sending until all is sent
                 while True:
@@ -196,6 +185,27 @@ else:
                             numSent += clientSocket.send(
                                 fileData[numSent:].encode())
 
+                    # File exists but is 0 byte
+                    elif os.stat(command[1]).st_size == 0 and zeroFilesent == False:
+
+                        dataSizeStr = "0"
+
+                        # Makes sure the dataSize is 10
+                        while len(dataSizeStr) < 10:
+                            dataSizeStr = "0" + dataSizeStr
+
+                        # Add the data size before the rest of the command
+                        fileData = dataSizeStr + fileData
+
+                        # The number of bytes sent
+                        numSent = 0
+
+                        # Send the data!
+                        while len(fileData) > numSent:
+                            numSent += clientSocket.send(
+                                fileData[numSent:].encode())
+                        zeroFilesent = True
+
                     else:
                         # Close the file because we're done
                         fileObj.close()
@@ -207,8 +217,10 @@ else:
             else:
 
                 print("[-] File'", file_name, "'does not exist.")
-                print(
-                    "[-] Please enter the command in the correct format: 'put <filename>'")
+                print("[-] Please enter the command in the correct format: 'put <filename>'")
+
+                # Send the user_input command and file name to the server
+                clientSocket.send(user_input.encode())
 
         ###################################################################################
 
