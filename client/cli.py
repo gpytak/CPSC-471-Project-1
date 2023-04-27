@@ -247,12 +247,11 @@ else:
 
             # Get the file size as an integer
             fileSize = int(fileSizeBuff)
-            #print ("filesize-int:",fileSize)
 
             # Get the file data using the first 10 bytes
             fileData = recvAll(clientSocket, fileSize)
 
-            #display a message and the server directory files
+            # Display a message and the server directory files
             print(fileData)
 
         ###################################################################################

@@ -203,13 +203,16 @@ else:
         # Verify if the command is 'ls'
         elif command[0] == "ls":
 
-            #this create a list and sort it
+            # This create a list and sort it
+
             lsString = os.listdir("./")
             lsString.sort()
-            #concatenate it in a string
+
+            # Concatenate it in a string
             fileData = ""
             for file in lsString:
-                #discard folders
+                
+                # Discard folders
                 if os.path.isfile(file):
                     fileData += file + " -> " + str(os.path.getsize(file)) + " bytes\n"
                 else:
@@ -218,7 +221,7 @@ else:
             # The number of bytes sent
             numSent = 0
 
-            # fileHeader will change to receive a header
+            # FileHeader will change to receive a header
             fileHeader = fileData
 
             # Get the size of the data
