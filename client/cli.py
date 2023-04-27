@@ -229,7 +229,7 @@ else:
                 print("[-] File'", file_name, "'does not exist.")
 
                 # Send the user_input command and file name to the server
-                clientSocket.send("FFFFFFFFFF".encode())
+                clientSocket.send(user_input.encode())
 
         ###################################################################################
 
