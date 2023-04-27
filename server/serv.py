@@ -1,6 +1,5 @@
 import socket
 import sys
-import subprocess
 import os.path
 from sys import getsizeof
 
