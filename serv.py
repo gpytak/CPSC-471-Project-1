@@ -85,6 +85,9 @@ else:
 
                 # The file data
                 fileData = None
+                
+                # set a flag for 0 byte
+                zeroFilesent = False
 
                 # Keep sending until all is sent
                 while True:
@@ -113,6 +116,25 @@ else:
                             numSent += clientSocket.send(
                                 fileData[numSent:].encode())
 
+                    #file exists but is 0 byte
+                    elif os.stat(command[1]).st_size == 0 and zeroFilesent == False:
+                        dataSizeStr = "0"
+                        # Makes sure the dataSize is 10
+                        while len(dataSizeStr) < 10:
+                            dataSizeStr = "0" + dataSizeStr
+                        # Add the data size before the rest of the command
+                        fileData = dataSizeStr + fileData
+
+                        # The number of bytes sent
+                        numSent = 0
+
+                        # Send the data!
+                        while len(fileData) > numSent:
+                            numSent += clientSocket.send(
+                                fileData[numSent:].encode())
+                        zeroFilesent = True
+        
+                            
                     else:
                         # Close the file because we're done
                         fileObj.close()
