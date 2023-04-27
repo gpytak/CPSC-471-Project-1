@@ -6,9 +6,11 @@ Luis Venegas as Luisvenegas214@csu.fullerton.edu
 Daniel Yoshida as dtyoshid@csu.fullerton.edu
 ## Programming language used: Python
 ## Follow the steps below to execute this code using python3:
-1) The server shall be invoked as: python3 serv.py "port number" Example: python3 serv.py 12001
-2) The ftp client is invoked as: python3 cli.py "server machine" "server port" Example: python3 cli.py localhost 12001
-3) The user can use the following commands when ftp> is prompted:
+1) Open a terminal and cd into the server folder.
+2) Open a second terminal and cd into the client folder.
+3) Use the server terminal and the server shall be invoked as: python3 serv.py "port number" Example: python3 serv.py 12001
+4) Use the client terminal and the ftp client is invoked as: python3 cli.py "server machine" "server port" Example: python3 cli.py localhost 12001
+5) The user can use the following commands when ftp> is prompted in the client terminal:
 ```
 ftp> get <filename>
 ftp> put <filename>
