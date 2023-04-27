@@ -230,6 +230,31 @@ else:
             # Send the verified command to the server
             clientSocket.send(verify_command.encode())
 
+            # The buffer to all data received from the client
+            fileData = ""
+
+            # The temporary buffer to store the received data
+            recvBuff = ""
+
+            # The size of the incoming file
+            fileSize = 0
+
+            # The buffer containing the file size
+            fileSizeBuff = ""
+
+            # Get the size of the buffer indicated by the first 10 bytes
+            fileSizeBuff = recvAll(clientSocket, 10)
+
+            # Get the file size as an integer
+            fileSize = int(fileSizeBuff)
+            #print ("filesize-int:",fileSize)
+
+            # Get the file data using the first 10 bytes
+            fileData = recvAll(clientSocket, fileSize)
+
+            #display a message and the server directory files
+            print(fileData)
+
         ###################################################################################
 
         # Verify if the command is 'quit'
