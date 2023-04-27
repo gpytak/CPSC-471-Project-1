@@ -2,6 +2,7 @@ import socket
 import sys
 import subprocess
 import os.path
+from sys import getsizeof
 
 # Command line checks
 if len(sys.argv) != 2:
@@ -202,12 +203,45 @@ else:
         # Verify if the command is 'ls'
         elif command[0] == "ls":
 
-            for line in subprocess.getstatusoutput(command[0]):
-                print(line)
+            #this create a list and sort it
+            lsString = os.listdir("./")
+            lsString.sort()
+            #concatenate it in a string
+            fileData = ""
+            for file in lsString:
+                #discard folders
+                if os.path.isfile(file):
+                    fileData += file + " -> " + str(os.path.getsize(file)) + " bytes\n"
+                else:
+                    fileData += "\\" + file + "\n"
+
+            # The number of bytes sent
+            numSent = 0
+
+            # fileHeader will change to receive a header
+            fileHeader = fileData
+
+            # Get the size of the data
+            dataSizeStr = str(len(fileData))
+
+            # Makes sure the dataSize has 10 digits
+            while len(dataSizeStr) < 10:
+                dataSizeStr = "0" + dataSizeStr
+            
+            # Add the data size before the rest of the command
+            fileHeader = dataSizeStr + fileHeader
+            # The number of bytes sent
+            numSent = 0
+
+            # Send the data!
+            while len(fileData) > numSent:
+                numSent += clientSocket.send(
+                        fileHeader[numSent:].encode())
+                           
+            print(fileData)
 
             print("-----------")
             print("[+] SUCCESS")
-
             getUserInput()
 
         ###################################################################################
