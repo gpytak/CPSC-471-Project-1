@@ -114,22 +114,24 @@ else:
 
                 # Get the size of the buffer indicated by the first 10 bytes
                 fileSizeBuff = recvAll(clientSocket, 10)
+                
+                #check if the header contains the file size or an error message
+                if fileSizeBuff == "FFFFFFFFFF":
+                    print("[-] File '", file_name, "' does not exist.")
+                else:
+                    # Get the file size as an integer
+                    fileSize = int(fileSizeBuff)
 
-                # Get the file size as an integer
-                fileSize = int(fileSizeBuff)
+                    # Get the file data using the first 10 bytes
+                    fileData = recvAll(clientSocket, fileSize)
 
-                # Get the file data using the first 10 bytes
-                fileData = recvAll(clientSocket, fileSize)
+                    with open(file_name, 'w') as file:
+                        file.write(fileData)
 
-                with open(file_name, 'w') as file:
-                    file.write(fileData)
-
-                print("[+] Filename:", file_name)
-                print("[+] Received", fileSize, "bytes.")
+                    print("[+] Filename:", file_name)
+                    print("[+] Received", fileSize, "bytes.")
 
             else:
-                
-                print("[-] File '", file_name, "' does not exist.")
                 print("[-] Please enter the command in the correct format: 'get <filename>'")
 
                 # Send the user_input command and file name to the server
@@ -217,7 +219,6 @@ else:
             else:
 
                 print("[-] File'", file_name, "'does not exist.")
-                print("[-] Please enter the command in the correct format: 'put <filename>'")
 
                 # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
