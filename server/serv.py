@@ -204,7 +204,6 @@ else:
         elif command[0] == "ls":
 
             # This create a list and sort it
-
             lsString = os.listdir("./")
             lsString.sort()
 
