@@ -139,6 +139,7 @@ else:
                         while len(fileData) > numSent:
                             numSent += clientSocket.send(
                                 fileData[numSent:].encode())
+
                         zeroFilesent = True
 
                     else:
@@ -183,6 +184,7 @@ else:
                 # Get the file data using the first 10 bytes
                 fileData = recvAll(clientSocket, fileSize)
 
+                # Generate file
                 with open(command[1], 'w') as file:
                     file.write(fileData)
 
@@ -210,10 +212,11 @@ else:
             # Concatenate it in a string
             fileData = ""
             for file in lsString:
-                
+
                 # Discard folders
                 if os.path.isfile(file):
-                    fileData += file + " -> " + str(os.path.getsize(file)) + " bytes\n"
+                    fileData += file + " -> " + \
+                        str(os.path.getsize(file)) + " bytes\n"
                 else:
                     fileData += "\\" + file + "\n"
 
@@ -229,21 +232,23 @@ else:
             # Makes sure the dataSize has 10 digits
             while len(dataSizeStr) < 10:
                 dataSizeStr = "0" + dataSizeStr
-            
+
             # Add the data size before the rest of the command
             fileHeader = dataSizeStr + fileHeader
+
             # The number of bytes sent
             numSent = 0
 
             # Send the data!
             while len(fileData) > numSent:
                 numSent += clientSocket.send(
-                        fileHeader[numSent:].encode())
-                           
+                    fileHeader[numSent:].encode())
+
             print(fileData)
 
             print("-----------")
             print("[+] SUCCESS")
+
             getUserInput()
 
         ###################################################################################

@@ -114,11 +114,17 @@ else:
 
                 # Get the size of the buffer indicated by the first 10 bytes
                 fileSizeBuff = recvAll(clientSocket, 10)
-                
-                #check if the header contains the file size or an error message
+
+                # Check if the header contains the file size or an error message
                 if fileSizeBuff == "FFFFFFFFFF":
+
                     print("[-] File '", file_name, "' does not exist.")
+
+                    # Send the user_input command and file name to the server
+                    clientSocket.send(user_input.encode())
+
                 else:
+
                     # Get the file size as an integer
                     fileSize = int(fileSizeBuff)
 
@@ -206,6 +212,7 @@ else:
                         while len(fileData) > numSent:
                             numSent += clientSocket.send(
                                 fileData[numSent:].encode())
+
                         zeroFilesent = True
 
                     else:
