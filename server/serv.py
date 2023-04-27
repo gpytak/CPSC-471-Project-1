@@ -152,7 +152,11 @@ else:
                 getUserInput()
 
             else:
-
+                #sending a header with error code FFFFFFFFFF
+                fileHeader = "FFFFFFFFFF"
+                # Send the data!
+                clientSocket.send(fileHeader.encode())
+                            
                 print("-----------")
                 print("[-] FAILURE")
 
@@ -232,8 +236,6 @@ else:
             
             # Add the data size before the rest of the command
             fileHeader = dataSizeStr + fileHeader
-            # The number of bytes sent
-            numSent = 0
 
             # Send the data!
             while len(fileData) > numSent:
