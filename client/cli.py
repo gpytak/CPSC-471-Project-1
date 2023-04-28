@@ -96,6 +96,7 @@ else:
         if verify_command == "get":
 
             if file_name != None:
+                print("FILE EXISTS!")
 
                 # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
@@ -124,11 +125,13 @@ else:
                 # Generate file
                 with open(file_name, 'w') as file:
                     file.write(fileData)
+                    # maybe should add file.close() here??
 
                 print("[+] Filename:", file_name)
                 print("[+] Received", fileSize, "bytes.")
 
             else:
+                print("FILE FUGAZI!")
                 print("[-] Please enter the command in the correct format: 'get <filename>'")
 
                 # Send the user_input command and file name to the server
