@@ -93,10 +93,19 @@ else:
         ###################################################################################
 
         # Verify if the command is 'get'
+
         if verify_command == "get":
 
-            if file_name != None:
-                print("FILE EXISTS!")
+            # Getting the path of the folder
+            # print('Current Working Directory is: ', os.getcwd())
+
+            # Move to server directory
+            os.chdir('..\server/')
+
+            # Confirm the current directory
+            # print('Updated Working Directory is: ', os.getcwd())
+
+            if os.path.isfile(file_name):
 
                 # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
@@ -122,17 +131,25 @@ else:
                 # Get the file data using the first 10 bytes
                 fileData = recvAll(clientSocket, fileSize)
 
+                # Getting the path of the folder
+                # print('Current Working Directory is: ', os.getcwd())
+
+                # Move to client directory
+                os.chdir('..\client/')
+
+                # Confirm the current directory
+                # print('Updated Working Directory is: ', os.getcwd())
+
                 # Generate file
                 with open(file_name, 'w') as file:
                     file.write(fileData)
-                    # maybe should add file.close() here??
 
                 print("[+] Filename:", file_name)
                 print("[+] Received", fileSize, "bytes.")
 
             else:
-                print("FILE FUGAZI!")
-                print("[-] Please enter the command in the correct format: 'get <filename>'")
+
+                print("[-] File'", file_name, "'does not exist.")
 
                 # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())

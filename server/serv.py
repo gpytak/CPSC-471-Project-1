@@ -47,6 +47,8 @@ else:
     # Bind the socket to the port
     serverSocket.bind(('', serverPort))
 
+    print("Ephemeral port: ", serverSocket.getsockname()[1])
+
     # Start listening for incoming connections
     serverSocket.listen(1)
 
@@ -69,8 +71,8 @@ else:
         # Verify if the command is 'get'
         if command[0] == "get":
 
-            # Check if the length of the command is 3
-            if len(receivedData) == 3:
+            # Check if the length of the command is 3 or the file name is empty
+            if len(receivedData) == 3 or command[1] == None:
 
                 print("-----------")
                 print("[-] FAILURE")
@@ -78,7 +80,7 @@ else:
                 getUserInput()
 
             # Check if the path of the file exists or not
-            if os.path.isfile(command[1]):
+            if os.path.isfile(command[1]) == True:
 
                 # Open the file
                 fileObj = open(sys.path[1] + "/" + command[1], "r")
@@ -152,7 +154,7 @@ else:
                 getUserInput()
 
             else:
-                            
+
                 print("-----------")
                 print("[-] FAILURE")
 
@@ -163,7 +165,24 @@ else:
         # Verify if the command is 'put'
         elif command[0] == "put":
 
-            if len(receivedData) != 3:
+            # Check if the length of the command is 3 or the file name is empty
+            if len(receivedData) == 3 or command[1] == None:
+
+                print("-----------")
+                print("[-] FAILURE")
+
+                getUserInput()
+
+            # Getting the path of the folder
+            # print('Current Working Directory is: ', os.getcwd())
+
+            # Move to server directory
+            os.chdir('..\client/')
+
+            # Confirm the current directory
+            # print('Updated Working Directory is: ', os.getcwd())
+
+            if os.path.isfile(command[1]) == True:
 
                 # The buffer to all data received from the client
                 fileData = ""
@@ -182,6 +201,15 @@ else:
 
                 # Get the file data using the first 10 bytes
                 fileData = recvAll(clientSocket, fileSize)
+
+                # Getting the path of the folder
+                # print('Current Working Directory is: ', os.getcwd())
+
+                # Move to client directory
+                os.chdir('..\server/')
+
+                # Confirm the current directory
+                # print('Updated Working Directory is: ', os.getcwd())
 
                 # Generate file
                 with open(command[1], 'w') as file:
