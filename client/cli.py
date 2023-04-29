@@ -97,18 +97,18 @@ else:
         if verify_command == "get":
 
             # Getting the path of the folder
-            print('Current Working Directory is: ', os.getcwd())
+            # print('Current Working Directory is: ', os.getcwd())
 
             # Move to server directory
-            os.chdir('../server/')
+            os.chdir('..\server/')
 
             # Confirm the current directory
-            print('Updated Working Directory is: ', os.getcwd())
+            # print('Updated Working Directory is: ', os.getcwd())
 
             if os.path.isfile(file_name):
 
                 # Confirm the current directory
-                print('Working Directory is: ', os.getcwd())
+                # print('Working Directory is: ', os.getcwd())
 
                 # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
@@ -134,16 +134,14 @@ else:
                 # Get the file data using the first 10 bytes
                 fileData = recvAll(clientSocket, fileSize)
 
-                print(fileData)
-
                 # Getting the path of the folder
-                print('Current Working Directory is: ', os.getcwd())
+                # print('Current Working Directory is: ', os.getcwd())
 
                 # Move to client directory
-                os.chdir('../client/')
+                os.chdir('..\client/')
 
                 # Confirm the current directory
-                print('Updated Working Directory is: ', os.getcwd())
+                # print('Updated Working Directory is: ', os.getcwd())
 
                 # Generate file
                 with open(file_name, 'w') as file:
@@ -157,7 +155,7 @@ else:
                 print("[-] File'", file_name, "'does not exist.")
 
                 # Move to client directory
-                os.chdir('../client/')
+                os.chdir('..\client/')
 
                 # Send the user_input command and file name to the server
                 clientSocket.send(user_input.encode())
