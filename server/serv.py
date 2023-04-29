@@ -173,14 +173,8 @@ else:
 
                 getUserInput()
 
-            # Getting the path of the folder
-            # print('Current Working Directory is: ', os.getcwd())
-
             # Move to client directory
-            os.chdir('..\client/')
-
-            # Confirm the current directory
-            # print('Updated Working Directory is: ', os.getcwd())
+            os.chdir('../client/')
 
             if os.path.isfile(command[1]) == True:
 
@@ -202,14 +196,8 @@ else:
                 # Get the file data using the first 10 bytes
                 fileData = recvAll(clientSocket, fileSize)
 
-                # Getting the path of the folder
-                # print('Current Working Directory is: ', os.getcwd())
-
                 # Move to server directory
-                os.chdir('..\server/')
-
-                # Confirm the current directory
-                # print('Updated Working Directory is: ', os.getcwd())
+                os.chdir('../server/')
 
                 # Generate file
                 with open(command[1], 'w') as file:
@@ -226,7 +214,7 @@ else:
                 print("[-] FAILURE")
 
                 # Move to server directory
-                os.chdir('..\server/')
+                os.chdir('../server/')
 
                 getUserInput()
 
