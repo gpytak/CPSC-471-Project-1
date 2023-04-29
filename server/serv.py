@@ -177,7 +177,7 @@ else:
             # print('Current Working Directory is: ', os.getcwd())
 
             # Move to server directory
-            os.chdir('..\client/')
+            os.chdir('../client/')
 
             # Confirm the current directory
             # print('Updated Working Directory is: ', os.getcwd())
@@ -206,7 +206,7 @@ else:
                 # print('Current Working Directory is: ', os.getcwd())
 
                 # Move to client directory
-                os.chdir('..\server/')
+                os.chdir('../server/')
 
                 # Confirm the current directory
                 # print('Updated Working Directory is: ', os.getcwd())
