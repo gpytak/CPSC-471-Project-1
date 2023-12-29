@@ -1,9 +1,3 @@
-# CPSC-471-Project-1
-Daniel Chen Wu as d.wu@csu.fullerton.edu  
-Jose Morales as j_morales@csu.fullerton.com  
-Gregory Pytak as gpytak@csu.fullerton.edu  
-Luis Venegas as Luisvenegas214@csu.fullerton.edu  
-Daniel Yoshida as dtyoshid@csu.fullerton.edu
 ## Programming language used: Python
 ## Follow the steps below to execute this code using python3:
 1) Unzip the tar file and place/save the folder "CPSC-471-Project-1-main" in the downloads folder.
