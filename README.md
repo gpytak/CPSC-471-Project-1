@@ -1,4 +1,3 @@
-## Programming language used: Python
 ## Follow the steps below to execute this code using python3:
 1) Unzip the tar file and place/save the folder "CPSC-471-Project-1-main" in the downloads folder.
 2) Open a terminal and cd into the server folder, "cd Downloads/CPSC-471-Project-1-main/server" or "cd CPSC-471-Project-1-main/server".
